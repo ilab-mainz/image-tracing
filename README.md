@@ -1,5 +1,3 @@
-#Image Tracer Demo
-
 Image tracing in the browser using [imagetracer.js](https://github.com/jankovicsandras/imagetracerjs)
 
 ## Observations
