@@ -1,0 +1,105 @@
+<html>
+    <header>
+        <title>Tracing</title>
+        <style>
+            
+            *{
+                font-family: Arial;
+            }
+            
+            path + path {
+                stroke: black;
+            }
+            path + path:hover {
+                fill: red;
+            }
+
+            article {
+                display: flex;
+                width: 900px;
+            }
+            section {
+                flex: 50%;
+            }
+            button {
+                background-color: lightgray;
+            }
+
+        </style>
+        <script type="module">
+
+            import * as imageTracer from 'https://unpkg.com/imagetracerjs@1.2.5/imagetracer_v1.2.5.js';
+            import { randomImage } from './js/image.js';
+
+
+            // draw a random image
+            randomImage();
+
+            // create SVG
+            let canvas = document.getElementById( 'canvas' );
+            let imgdata = ImageTracer.getImgdata(canvas);
+            let svgstr = ImageTracer.imagedataToSVG( imgdata, { scale: 1.0 / window.devicePixelRatio } );
+            let options =  'posterized1';
+
+            ImageTracer.appendSVGString( svgstr, 'svg', options );
+
+            // Allow downloading SVG
+            var svgBlob = new Blob([svgstr], {type: 'image/svg+xml;charset=utf-8'});
+            var url = URL.createObjectURL(svgBlob);
+            var filename = 'example.svg';
+
+            document.getElementById('saveSvg').addEventListener('click', () => 
+                                                                triggerDownload(url, filename)                               
+                                                               );
+
+
+            // dynamically create a download link and pass the click event to it ...
+            function triggerDownload (uri, filename) {
+
+                var evt = new MouseEvent('click', {
+                    view: window,
+                    bubbles: false,
+                    cancelable: true
+                });
+
+                var a = document.createElement('a');
+                a.setAttribute('download', filename);
+                a.setAttribute('href', uri);
+                a.setAttribute('target', '_blank');
+
+                a.dispatchEvent(evt);
+            }
+
+
+        </script>
+        <style>
+            #canvas, #svg {
+                width: 400px;
+                height: 400px;
+                border: 1px solid #ddd;
+            }
+        </style>
+    </header>
+    <body>
+
+        <h1>Image Tracer Demo</h1>
+
+        <article>
+            <section>
+                <h2>Canvas</h2>
+                <canvas id="canvas"></canvas><br>
+                <p>
+                Reload the page to create a new random image
+                </p>
+            </section>
+            <section>
+                <h2>SVG</h2>
+                <svg id="svg"></svg><br>
+                <p>
+                Hover with the mouse over the SVG to hilite individual paths
+                </p>
+                <button id="saveSvg">Save SVG</button>
+            </section>
+        </article>
+    </body>
+</html>
